@@ -2,7 +2,5 @@
 # List must be include both strings and integers and must be hardcoded.
 
 lst = ['geethub', 2023]
-st = ''
-for i in range(len(lst)):
-    st += f'{lst[i]}'
-print(st)
+str_lst = [str(i) for i in lst]
+print(''.join(str_lst))

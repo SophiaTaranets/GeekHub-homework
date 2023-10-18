@@ -2,8 +2,8 @@
 # At the end script must print out result of concatenating all <number> strings.
 
 number = int(input('Enter number: '))
-st = ''
+lst = []
 for i in range(number):
     s = input(f'Enter {i+1} number: ')
-    st += s
-print('Result:', st)
+    lst.append(s)
+print('Result:', ''.join(lst))
