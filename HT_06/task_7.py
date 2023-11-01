@@ -20,5 +20,5 @@ def similar_elements(lst: list):
     return ', '.join(result)
 
 
-test_list = [1, 1, 'foo', [1, 2], True, 'foo', 1, [1, 2], 'True', None, 'None', (1, 2), {1, 2}, {1, 2}, {1: 1, 2: 4}]
+test_list = [1, 1, 'foo', [1, 2], True, 'foo', 1, [1, 2], 'True', None, 'None', (1, 2), {1: 1, 2: 4}, {1, 2}, {1, 2}]
 print(f'Result: {similar_elements(test_list)}')
