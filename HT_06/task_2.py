@@ -5,7 +5,7 @@
 # Функція повинна принтануть суму, яка буде на рахунку, а також її повернути (але округлену до копійок).
 
 def bank(a, years, percent=10):
-    for year in range(1, years + 1):
+    for year in range(years):
         a += a * percent / 100
     result_suma = round(a, 2)
     print(f'Balance after {years} years: {result_suma}')

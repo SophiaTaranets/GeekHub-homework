@@ -6,7 +6,10 @@
 def similar_elements(lst: list):
     count_elements = {}
     for element in lst:
-        k = str(element)
+        if isinstance(element, (list, set, dict)):
+            k = str(element)
+        else:
+            k = element
         if k in count_elements:
             count_elements[k] += 1
         else:
@@ -17,5 +20,5 @@ def similar_elements(lst: list):
     return ', '.join(result)
 
 
-test_list = [1, 1, 'foo', [1, 2], True, 'foo', 1, [1, 2]]
+test_list = [1, 1, 'foo', [1, 2], True, 'foo', 1, [1, 2], 'True', None, 'None', (1, 2), {1, 2}, {1, 2}, {1: 1, 2: 4}]
 print(f'Result: {similar_elements(test_list)}')
