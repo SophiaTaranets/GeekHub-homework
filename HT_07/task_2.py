@@ -23,7 +23,7 @@ def credentials_validation(username: str, password: str):
     if not len(password) >= 8:
         raise ValidationException('Password must consist at least 8 symbols')
 
-    if not (any([i.isdigit() for i in password])):
+    if not (any([symbol.isdigit() for symbol in password])):
         raise ValidationException('Password must consist at least 1 digit symbol')
 
     return True
