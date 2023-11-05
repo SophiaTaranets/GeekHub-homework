@@ -37,9 +37,8 @@ def morse_code(morse_string: str) -> str:
         letters = word.split(' ')
 
         for letter in letters:
-            for morse_symbol, latin_letter in morse_code_dictionary.items():
-                if letter == morse_symbol:
-                    decode_word.append(latin_letter)
+            if letter in morse_code_dictionary:
+                decode_word.append(morse_code_dictionary[letter])
         decode_words.append(''.join(decode_word))
     decode_morse_string = ' '.join(decode_words)
 
