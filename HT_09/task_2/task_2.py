@@ -37,6 +37,7 @@ test_file_1 = 'test_1.txt'
 test_file_2 = 'test_2.txt'
 test_file_3 = 'test_3.txt'
 block_size = 3
+
 try:
     print(f'Test 1 (1111222333):\n{file_blocks(test_file_1, block_size)}\n')
     print(f'Test 2 (111222333):\n{file_blocks(test_file_2, block_size)}\n')
