@@ -42,6 +42,12 @@ class ValidationException(Exception):
     pass
 
 
+def read_text_file(filename):
+    with open(filename, encoding='utf-8') as file:
+        content = file.read()
+    return content
+
+
 def read_user_credentials(filename):
     try:
         data = {}
@@ -74,8 +80,7 @@ def validate_amount(amount_str):
 
 def check_user_balance(filename):
     try:
-        with open(filename, encoding='utf-8') as file:
-            balance = file.read()
+        balance = read_text_file(filename)
     except FileNotFoundError:
         return 'Your balance file is missing'
     else:
@@ -84,8 +89,7 @@ def check_user_balance(filename):
 
 def top_up_balance(filename, income):
     try:
-        with open(filename, encoding='utf-8') as file:
-            current_balance = file.read()
+        current_balance = read_text_file(filename)
         with open(filename, 'w', encoding='utf-8') as file:
             if current_balance == '':
                 new_balance = validate_amount(income)
@@ -99,7 +103,7 @@ def top_up_balance(filename, income):
 
 def take_money_out(filename, suma):
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             current_balance = file.read()
         with open(filename, 'w', encoding='utf-8') as file:
             if current_balance == '':
@@ -113,7 +117,7 @@ def take_money_out(filename, suma):
 
     except FileExistsError:
         return 'Your balance file is missing'
-    return f'Your balance was down with {suma} uah\nCurrent balance: {new_balance}.'
+    return f'Your balance was down with {suma} uah\nCurrent balance: {new_balance}.\n'
 
 
 def log_transactions(filename, action, amount):
@@ -134,10 +138,32 @@ def log_transactions(filename, action, amount):
 
 
 def menu():
-    print('1 - Check balance')
-    print('2 - Top up the balance')
-    print('3 - Take money out')
-    print('0 - Exit')
+    print('1 - Check balance\n'
+          '2 - Top up the balance\n'
+          '3 - Take money out\n'
+          '0 - Exit\n')
+
+
+def handle_check_balance(users_balance):
+    print(check_user_balance(users_balance))
+
+
+def handle_top_up_balance(users_balance, users_transactions):
+    try:
+        income = validate_amount(input('Enter income: '))
+        log_transactions(users_transactions, 'top_up', income)
+        print(top_up_balance(users_balance, income))
+    except ValidationException as error:
+        print(error)
+
+
+def handle_take_money_out(users_balance, users_transactions):
+    try:
+        suma = validate_amount(input('Enter suma you want to get: '))
+        log_transactions(users_transactions, 'money_down', suma)
+        print(take_money_out(users_balance, suma))
+    except ValidationException as error:
+        print(error)
 
 
 def start():
@@ -154,39 +180,30 @@ def start():
     else:
         try:
             users_data = read_user_credentials(users_file)
-            authorisation_result = login(name, password, users_data)
-            if authorisation_result is not False:
+            authorization_result = login(name, password, users_data)
+            if authorization_result is not False:
                 print('Log in successfully!\n')
                 while True:
                     menu()
-                    query = input('Enter your choose: ')
+                    query = input('Enter your choice: ')
                     if query == '1':
-                        print(check_user_balance(users_balance))
+                        handle_check_balance(users_balance)
 
                     elif query == '2':
-                        try:
-                            income = validate_amount(input('Enter income: '))
-                            log_transactions(users_transactions, 'top_up', income)
-                            print(top_up_balance(users_balance, income))
-                        except ValidationException as error:
-                            print(error)
+                        handle_top_up_balance(users_balance, users_transactions)
 
                     elif query == '3':
-                        try:
-                            suma = validate_amount(input('Enter suma you want to get: '))
-                            log_transactions(users_transactions, 'money_down', suma)
-                            print(take_money_out(users_balance, suma))
-                        except ValidationException as error:
-                            print(error)
+                        handle_take_money_out(users_balance, users_transactions)
+
                     elif query == '0':
-                        print(f"Do you want to exit?")
+                        print("Do you want to exit?")
                         a = input("If yes, type 'yes': ")
-                        if a == "yes":
+                        if a.lower() == "yes":
                             break
                         else:
                             continue
                     else:
-                        print('Incorrect chosen. Try again.')
+                        print('Incorrect choice. Try again.')
 
         except KeyError as error:
             print(error)

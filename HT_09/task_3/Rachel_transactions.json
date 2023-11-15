@@ -11,3 +11,9 @@
 {"transactions_time": "2023-11-15 14:53:01.546868", "action": "money_down", "amount": 50.0}
 {"transactions_time": "2023-11-15 14:53:19.260467", "action": "top_up", "amount": 1000.0}
 {"transactions_time": "2023-11-15 14:53:24.908186", "action": "money_down", "amount": 50.0}
+{"transactions_time": "2023-11-15 15:25:41.492336", "action": "top_up", "amount": 10000.0}
+{"transactions_time": "2023-11-15 15:25:46.936171", "action": "money_down", "amount": 900.0}
+{"transactions_time": "2023-11-15 15:27:01.058952", "action": "top_up", "amount": 1000.0}
+{"transactions_time": "2023-11-15 15:27:05.650204", "action": "money_down", "amount": 200.0}
+{"transactions_time": "2023-11-15 15:47:23.931077", "action": "top_up", "amount": 1000.0}
+{"transactions_time": "2023-11-15 15:47:29.257387", "action": "money_down", "amount": 500.0}
