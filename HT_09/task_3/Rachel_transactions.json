@@ -1,0 +1,13 @@
+{"transactions_time": "2023-11-13 16:49:43.057304", "action": "top_up", "amount": 3000}
+{"transactions_time": "2023-11-13 16:49:51.048470", "action": "money_down", "amount": 500}
+{"transactions_time": "2023-11-15 14:27:30.185205", "action": "money_down", "amount": 3333}
+{"transactions_time": "2023-11-15 14:29:50.282636", "action": "top_up", "amount": "Amount must be a positive integer."}
+{"transactions_time": "2023-11-15 14:41:54.149748", "action": "top_up", "amount": 45.0}
+{"transactions_time": "2023-11-15 14:42:48.808663", "action": "top_up", "amount": 34.0}
+{"transactions_time": "2023-11-15 14:42:53.985272", "action": "top_up", "amount": 4.0}
+{"transactions_time": "2023-11-15 14:44:27.831157", "action": "top_up", "amount": {"transactions_time": "2023-11-15 14:47:17.972685", "action": "top_up", "amount": 4.0}
+{"transactions_time": "2023-11-15 14:51:35.147240", "action": "top_up", "amount": 1000.0}
+{"transactions_time": "2023-11-15 14:52:08.581772", "action": "money_down", "amount": 50.0}
+{"transactions_time": "2023-11-15 14:53:01.546868", "action": "money_down", "amount": 50.0}
+{"transactions_time": "2023-11-15 14:53:19.260467", "action": "top_up", "amount": 1000.0}
+{"transactions_time": "2023-11-15 14:53:24.908186", "action": "money_down", "amount": 50.0}

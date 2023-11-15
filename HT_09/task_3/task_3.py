@@ -45,52 +45,36 @@ class ValidationException(Exception):
 def read_user_credentials(filename):
     try:
         data = {}
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             reader = csv.DictReader(file)
-            for row in reader:
-                data[row['username']] = row['password']
-            return data
+            for i, row in enumerate(reader):
+                data[i] = {'username': row['username'], 'password': row['password']}
+        return data
     except FileNotFoundError:
         return {}
 
 
-def check_user_credentials(username: str, password: str, credentials_dict: dict):
-    try:
-        if credentials_dict[username] == password:
+def login(username: str, password: str, credentials_dict: dict):
+    for value in credentials_dict.values():
+        if value['username'] == username and value['password'] == password:
             return True
-        else:
-            return False
-    except KeyError as error:
-            return error
+    raise KeyError('Invalid username or password')
 
 
 def validate_amount(amount_str):
     try:
-        amount = int(amount_str)
+        amount = float(amount_str)
         if amount <= 0:
-            raise ValidationException('Amount must be a positive integer.')
-        return amount
+            raise ValidationException('Amount must be a positive number.')
     except ValueError:
-        raise ValidationException('Invalid input. Please enter a valid integer.')
+        raise ValidationException('Amount must be a valid number.')
 
-
-def validate_username(username):
-    special_characters_pattern = re.compile(r'[!@#$%^&*(),.?":{}|<>]')
-    if special_characters_pattern.search(username):
-        raise ValidationException('Username can`t consist special symbols')
-
-
-def validate_password(password):
-    if not len(password) >= 8:
-        raise ValidationException('Password must consist at least 8 symbols')
-
-    if not (any([symbol.isdigit() for symbol in password])):
-        raise ValidationException('Password must consist at least 1 digit symbol')
+    return amount
 
 
 def check_user_balance(filename):
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             balance = file.read()
     except FileNotFoundError:
         return 'Your balance file is missing'
@@ -100,13 +84,13 @@ def check_user_balance(filename):
 
 def top_up_balance(filename, income):
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             current_balance = file.read()
         with open(filename, 'w', encoding='utf-8') as file:
             if current_balance == '':
-                new_balance = income
+                new_balance = validate_amount(income)
             else:
-                new_balance = int(current_balance) + income
+                new_balance = float(current_balance) + income
             file.write(str(new_balance))
     except FileNotFoundError:
         return 'Your balance file is missing'
@@ -119,17 +103,17 @@ def take_money_out(filename, suma):
             current_balance = file.read()
         with open(filename, 'w', encoding='utf-8') as file:
             if current_balance == '':
-                return 'Your balance is empty'
+                return 'Your balance is empty.'
             else:
-                if int(current_balance) < suma:
-                    return 'You don`t have enough money'
+                if float(current_balance) < suma:
+                    return 'You don`t have enough money.'
                 else:
-                    new_balance = int(current_balance) - suma
+                    new_balance = float(current_balance) - suma
             file.write(str(new_balance))
 
     except FileExistsError:
         return 'Your balance file is missing'
-    return f'Your balance was down with {suma} uah\nCurrent balance: {new_balance}'
+    return f'Your balance was down with {suma} uah\nCurrent balance: {new_balance}.'
 
 
 def log_transactions(filename, action, amount):
@@ -144,9 +128,9 @@ def log_transactions(filename, action, amount):
         with open(filename, 'a', encoding='utf-8') as file:
             json.dump(transactions, file)
             file.write('\n')
-        return 'Transaction logged successfully'
+        return 'Transaction logged successfully.'
     except FileNotFoundError:
-        return 'Your transaction log file is missing'
+        return 'Your transaction log file is missing.'
 
 
 def menu():
@@ -163,27 +147,37 @@ def start():
         users_file = 'users.csv'
         users_balance = f'{name}_balance.txt'
         users_transactions = f'{name}_transactions.json'
+
     except ValidationException as error:
         print(error)
+
     else:
         try:
             users_data = read_user_credentials(users_file)
-            authorisation_result = check_user_credentials(name, password, users_data)
+            authorisation_result = login(name, password, users_data)
             if authorisation_result is not False:
-                print('Log in successfully!')
+                print('Log in successfully!\n')
                 while True:
                     menu()
                     query = input('Enter your choose: ')
                     if query == '1':
                         print(check_user_balance(users_balance))
+
                     elif query == '2':
-                        income = validate_amount(input('Enter income: '))
-                        log_transactions(users_transactions, 'top_up', income)
-                        print(top_up_balance(users_balance, income))
+                        try:
+                            income = validate_amount(input('Enter income: '))
+                            log_transactions(users_transactions, 'top_up', income)
+                            print(top_up_balance(users_balance, income))
+                        except ValidationException as error:
+                            print(error)
+
                     elif query == '3':
-                        suma = validate_amount(input('Enter suma you want to get: '))
-                        log_transactions(users_transactions, 'money_down', suma)
-                        print(take_money_out(users_balance, suma))
+                        try:
+                            suma = validate_amount(input('Enter suma you want to get: '))
+                            log_transactions(users_transactions, 'money_down', suma)
+                            print(take_money_out(users_balance, suma))
+                        except ValidationException as error:
+                            print(error)
                     elif query == '0':
                         print(f"Do you want to exit?")
                         a = input("If yes, type 'yes': ")
@@ -191,8 +185,10 @@ def start():
                             break
                         else:
                             continue
+                    else:
+                        print('Incorrect chosen. Try again.')
 
-        except ValidationException as error:
+        except KeyError as error:
             print(error)
 
 
