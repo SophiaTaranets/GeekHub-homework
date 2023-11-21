@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-from Bank import check_bank_balance
+from Bank import check_bank_balance, update_bank_balance
 
 
 def create_new_user(username: str, password: str):
@@ -53,7 +53,7 @@ def check_user_balance(user_id):
     except Exception as e:
         return e
     else:
-        return balance
+        return balance[0]
 
 
 def available_nominal(amount):
@@ -68,6 +68,7 @@ def available_nominal(amount):
 
 
 def top_up_balance(user_id, income):
+    update_bank_balance()
     try:
         conn = sqlite3.connect('bank.db')
         cursor = conn.cursor()
@@ -82,27 +83,30 @@ def top_up_balance(user_id, income):
         cursor.execute('SELECT balance FROM accounts WHERE user_id = ?', (user_id,))
         balance = cursor.fetchone()
         conn.close()
+
     except Exception as e:
         return e
-    return f'Your balance was replenished with {income} uah\nCurrent balance: {balance}\n'
+    return f'Your balance was replenished with {income} uah\nCurrent balance: {balance[0]}\n'
 
 
 def take_money_out(user_id, suma):
+    update_bank_balance()
     try:
+        suma = float(suma)
         conn = sqlite3.connect('bank.db')
         cursor = conn.cursor()
         cursor.execute('SELECT balance FROM accounts WHERE user_id = ?', (user_id,))
         current_balance = cursor.fetchone()[0]
 
-        bank_balance = check_bank_balance()[0]
+        bank_balance = check_bank_balance()
 
         if current_balance < suma:
             conn.close()
-            return 'You don`t have enough money.'
+            return 'You don`t have enough money.\n'
 
         if suma > bank_balance:
             conn.close()
-            return 'Bank does not have enough funds to carry out the transaction'
+            return 'Bank does not have enough funds to carry out the transaction\n'
 
         cursor.execute('UPDATE accounts SET balance = balance - ? WHERE user_id = ?', (suma, user_id,))
         conn.commit()
@@ -117,7 +121,7 @@ def take_money_out(user_id, suma):
         conn.close()
     except Exception as e:
         return e
-    return f'Your balance was down with {suma} uah\nCurrent balance: {new_balance}'
+    return f'Your balance was down with {suma} uah\nCurrent balance: {new_balance}\n'
 
 
 def admin_rules(username):

@@ -38,13 +38,13 @@ def create_db():
             CREATE TABLE IF NOT EXISTS bank_account (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 total_balance REAL  DEFAULT 0 NOT NULL,
-                nominal_10 REAL  DEFAULT 0 NOT NULL,
-                nominal_20 REAL DEFAULT 0 NOT NULL,
-                nominal_50 REAL  DEFAULT 0 NOT NULL,
-                nominal_100 REAL  DEFAULT 0 NOT NULL,
-                nominal_200 REAL  DEFAULT 0 NOT NULL,
-                nominal_500 REAL  DEFAULT 0 NOT NULL
-
+                nominal_10 INTEGER  DEFAULT 0 NOT NULL,
+                nominal_20 INTEGER DEFAULT 0 NOT NULL,
+                nominal_50 INTEGER  DEFAULT 0 NOT NULL,
+                nominal_100 INTEGER  DEFAULT 0 NOT NULL,
+                nominal_200 INTEGER  DEFAULT 0 NOT NULL,
+                nominal_500 INTEGER  DEFAULT 0 NOT NULL,
+                nominal_1000 INTEGER  DEFAULT 0 NOT NULL
             )
     ''')
 

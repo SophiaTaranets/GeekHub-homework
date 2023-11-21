@@ -7,7 +7,7 @@ class ValidationException(Exception):
 
 def validate_password(password):
     if not len(password) >= 5:
-        raise ValidationException('Password must consist at least 8 symbols')
+        raise ValidationException('Password must consist at least 5 symbols')
 
     # if not (any([symbol.isdigit() for symbol in password])):
     #     raise ValidationException('Password must consist at least 1 digit symbol')
@@ -27,7 +27,7 @@ def validate_username(username):
 def validate_amount(amount_str):
     try:
         amount = float(amount_str)
-        if amount <= 0:
+        if amount < 0:
             raise ValidationException('Amount must be a positive number.')
     except ValueError:
         raise ValidationException('Amount must be a valid number.')
