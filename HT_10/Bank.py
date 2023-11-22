@@ -11,7 +11,7 @@ def check_bank_nominal():
                        'nominal_50, '
                        'nominal_100,'
                        'nominal_200, '
-                       'nominal_500 FROM bank_account WHERE id = 1')
+                       'nominal_500, nominal_100 FROM bank_account WHERE id = 1')
         nominal_tuple = cursor.fetchone()
 
         nominal_dict = {
@@ -20,7 +20,8 @@ def check_bank_nominal():
             '50': nominal_tuple[2],
             '100': nominal_tuple[3],
             '200': nominal_tuple[4],
-            '500': nominal_tuple[5]
+            '500': nominal_tuple[5],
+            '1000': nominal_tuple[6]
         }
 
         conn.close()
