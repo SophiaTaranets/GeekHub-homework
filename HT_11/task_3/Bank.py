@@ -70,6 +70,9 @@ class Bank:
         elif nominal == 500:
             self.cursor.execute('UPDATE bank_account SET nominal_500 = nominal_500 + ?', (new_count,))
             self.conn.commit()
+        elif nominal == 1000:
+            self.cursor.execute('UPDATE bank_account SET nominal_1000 = nominal_1000 + ?', (new_count,))
+            self.conn.commit()
 
     def subtract_bank_nominal(self, nominal, new_count):
         nominal_dict = self.check_bank_nominal()
@@ -95,4 +98,7 @@ class Bank:
                 self.conn.commit()
             elif nominal == 500:
                 self.cursor.execute('UPDATE bank_account SET nominal_500 = nominal_500 - ?', (new_count,))
+                self.conn.commit()
+            elif nominal == 1000:
+                self.cursor.execute('UPDATE bank_account SET nominal_1000 = nominal_1000 - ?', (new_count,))
                 self.conn.commit()

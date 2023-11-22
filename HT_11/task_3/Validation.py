@@ -39,6 +39,6 @@ class Validation:
 
     @staticmethod
     def validate_nominal(nominal):
-        if int(nominal) not in [10, 20, 50, 100, 200, 500]:
-            raise ValidationException(f'Available nominal: (10, 20, 50, 100, 200, 500)')
+        if int(nominal) not in [10, 20, 50, 100, 200, 500, 1000]:
+            raise ValidationException(f'Available nominal: (10, 20, 50, 100, 200, 500, 1000)')
         return int(nominal)

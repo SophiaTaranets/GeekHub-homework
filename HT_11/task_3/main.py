@@ -44,7 +44,9 @@ def handle_take_money_out(user: User):
     try:
         v = Validation.Validation
         amount = v.validate_amount(input('Enter suma you want to get: '))
-        return f'{user.take_money_out(amount)}\n'
+        amount = user.available_nominal(amount)
+        return f'Available nominal: (10, 20, 50, 100, 200, 500, 1000)\n' \
+               f'{user.take_money_out(amount[0])}'
     except ValidationException as error:
         return error
 

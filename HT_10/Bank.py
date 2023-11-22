@@ -11,7 +11,8 @@ def check_bank_nominal():
                        'nominal_50, '
                        'nominal_100,'
                        'nominal_200, '
-                       'nominal_500, nominal_1000 FROM bank_account WHERE id = 1')
+                       'nominal_500, '
+                       'nominal_1000 FROM bank_account WHERE id = 1')
         nominal_tuple = cursor.fetchone()
 
         nominal_dict = {
@@ -73,6 +74,9 @@ def add_bank_nominal(nominal, new_count):
     elif nominal == 500:
         cursor.execute('UPDATE bank_account SET nominal_500 = nominal_500 + ?', (new_count,))
         conn.commit()
+    elif nominal == 1000:
+        cursor.execute('UPDATE bank_account SET nominal_1000 = nominal_1000 + ?', (new_count,))
+        conn.commit()
     conn.close()
 
 
@@ -102,5 +106,8 @@ def subtract_bank_nominal(nominal, new_count):
             conn.commit()
         elif nominal == 500:
             cursor.execute('UPDATE bank_account SET nominal_500 = nominal_500 - ?', (new_count,))
+            conn.commit()
+        elif nominal == 1000:
+            cursor.execute('UPDATE bank_account SET nominal_1000 = nominal_1000 - ?', (new_count,))
             conn.commit()
         conn.close()
