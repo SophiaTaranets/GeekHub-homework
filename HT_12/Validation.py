@@ -5,6 +5,10 @@ class ValidationException(Exception):
     pass
 
 
+class BanknoteException(Exception):
+    pass
+
+
 class Validation:
 
     @staticmethod

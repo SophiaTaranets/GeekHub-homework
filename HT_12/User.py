@@ -2,6 +2,9 @@ import random
 import sqlite3
 from datetime import datetime
 from Bank import Bank
+from CashAlgorithm import change_db_nominal, get_min_coins
+from Validation import BanknoteException
+
 
 class User:
     def __init__(self, username: str, password: str):
@@ -77,7 +80,8 @@ class User:
             return balance[0]
 
     def top_up_balance(self, amount):
-        # update_bank_balance()
+        b = Bank()
+        b.update_bank_balance()
         try:
             conn = sqlite3.connect('bank.db')
             cursor = conn.cursor()
@@ -98,16 +102,23 @@ class User:
         return f'Your balance was replenished with {amount} uah\nCurrent balance: {balance[0]}\n'
 
     def take_money_out(self, amount):
-        # update_bank_balance()
+        b = Bank()
+        b.update_bank_balance()
         try:
             amount = float(amount)
+
+            try:
+                change_db_nominal(b.check_bank_nominal(), amount)
+            except BanknoteException as e:
+                return e
+
             conn = sqlite3.connect('bank.db')
             cursor = conn.cursor()
             cursor.execute('SELECT balance FROM accounts WHERE user_id = ?', (self.__get_user_id(),))
             current_balance = cursor.fetchone()[0]
 
-            # bank_balance = check_bank_balance()
-            bank_balance = 7700
+            bank_balance = b.check_bank_balance()
+
             if current_balance < amount:
                 conn.close()
                 return 'You don`t have enough money.\n'
@@ -129,7 +140,9 @@ class User:
             conn.close()
         except Exception as e:
             return e
-        return f'Your balance was down with {amount} uah\nCurrent balance: {new_balance}\n'
+        return f'Your balance was down with {amount} uah\n' \
+               f'Get banknotes: {get_min_coins(b.check_bank_nominal(), amount)}\n' \
+               f'Current balance: {new_balance}\n'
 
     def admin_rules(self):
         if self.username == 'admin':
