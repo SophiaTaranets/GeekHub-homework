@@ -2,7 +2,7 @@ import random
 import sqlite3
 from datetime import datetime
 from Bank import Bank
-from CashAlgorithm import change_db_nominal, get_min_coins
+from CashAlgorithm import change_db_nominal
 from Validation import BanknoteException
 
 
@@ -105,13 +105,12 @@ class User:
         b = Bank()
         b.update_bank_balance()
         try:
-            amount = float(amount)
+            amount = int(amount)
 
             try:
                 change_db_nominal(b.check_bank_nominal(), amount)
             except BanknoteException as e:
                 return e
-
             conn = sqlite3.connect('bank.db')
             cursor = conn.cursor()
             cursor.execute('SELECT balance FROM accounts WHERE user_id = ?', (self.__get_user_id(),))
@@ -141,7 +140,6 @@ class User:
         except Exception as e:
             return e
         return f'Your balance was down with {amount} uah\n' \
-               f'Get banknotes: {get_min_coins(b.check_bank_nominal(), amount)}\n' \
                f'Current balance: {new_balance}\n'
 
     def admin_rules(self):

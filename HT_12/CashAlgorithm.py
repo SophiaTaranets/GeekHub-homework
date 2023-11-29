@@ -1,78 +1,79 @@
 from Bank import Bank
-from Validation import BanknoteException
 
 
-def min_coins(nom_dict, amount, memo={}):
-    filtered_coins = {key: value for key, value in nom_dict.items() if value != 0}
-    coin_values = filtered_coins.keys()
+def min_nominal(banknote_dict, total_amount):
+    def min_nominal_recursive(amount, memo):
+        if amount == 0:
+            return 0, {}
+        if amount < 0:
+            return float('inf'), {}
 
-    if amount == 0:
-        return 0, {}
+        if amount in memo:
+            return memo[amount]
 
-    if amount < 0:
-        return float('inf'), {}
+        min_count = float('inf')
+        min_combination = {}
 
-    if amount in memo:
-        return memo[amount]
+        for bill, count in banknote_dict.items():
+            if count > 0:
+                banknote_dict[bill] -= 1
+                sub_count, sub_combination = min_nominal_recursive(amount - bill, memo)
+                banknote_dict[bill] += 1
 
-    min_count = float('inf')
-    min_count_coins = {}
+                if sub_count + 1 < min_count:
+                    min_count = sub_count + 1
+                    min_combination = sub_combination.copy()
+                    if bill in min_combination:
+                        min_combination[bill] += 1
+                    else:
+                        min_combination[bill] = 1
 
-    for coin in coin_values:
-        remaining_target = amount - coin
-        count, remaining_coins = min_coins(nom_dict, remaining_target, memo)
-        count += 1
+        memo[amount] = (min_count, min_combination)
+        return min_count, min_combination
 
-        if count < min_count:
-            min_count = count
-            min_count_coins = remaining_coins.copy()
-            min_count_coins[coin] = min_count_coins.get(coin, 0) + 1
+    memo = {}
+    min_count, combination = min_nominal_recursive(total_amount, memo)
 
-    memo[amount] = min_count, min_count_coins
-    return min_count, min_count_coins
+    if min_count == float('inf'):
+        return {}
+    else:
+        return combination
 
 
 def change_db_nominal(banknote_dict, amount):
-    min_count, min_coins_used = min_coins(banknote_dict, amount)
+    result = min_nominal(banknote_dict, amount)
     b = Bank()
-    if min_count == float('inf'):
-        raise BanknoteException("Cannot make the exact amount.")
-    else:
-        for coin, count in min_coins_used.items():
+    if result:
+        for coin, count in result.items():
             b.subtract_bank_nominal(coin, count)
-            b.update_bank_balance()
+        b.update_bank_balance()
 
-
-def get_min_coins(banknote_dict, amount):
-    min_count, min_coins_used = min_coins(banknote_dict, amount)
-
-    if min_count == float('inf'):
-        raise BanknoteException("Cannot make the exact amount.")
+        print('Banknotes: ')
+        for bill, count in result.items():
+            print(f"{count}x{bill}")
     else:
-        print_result = []
-        for coin, count in min_coins_used.items():
-            print_result.append(f"{count} x {coin}")
-        return print_result
+        print("Cannot make the exact amount.")
 
+
+def get_min_nom(banknot, amount):
+    result = min_nominal(banknot, amount)
+    if result:
+        for bill, count in result.items():
+            print(f"{count}x{bill}")
+    else:
+        print("Cannot make the exact amount.")
 
 # Test 1: 1170
 # banknote_dict = {1000: 5, 500: 1, 200: 4, 100: 0, 50: 1, 20: 1, 10: 5}
-# amount = 1170
-# print(f'1170 -->')
-# print(get_min_coins(banknote_dict, amount))
-#
-# print('-' * 15)
-#
-# # Test 2: 160
+# cash_out_amount = 1170
+# get_min_nom(banknote_dict, cash_out_amount)
+
+# Test 2: 160
 # banknote_dict = {1000: 5, 500: 1, 200: 4, 100: 10, 50: 10, 20: 10, 10: 0}
-# amount = 160
-# print(f'160 -->')
-# get_min_coins(banknote_dict, amount)
-#
-# print('-' * 15)
-#
-# # Test 3: 110
-# banknote_dict = {1000: 5, 500: 1, 200: 1, 100: 1, 50: 4, 20: 6, 10: 0}
-# amount = 110
-# print(f'110 -->')
-# get_min_coins(banknote_dict, amount)
+# cash_out_amount = 160
+# get_min_nom(banknote_dict, cash_out_amount)
+
+# Test 3: 110
+# banknote_dict =  {1000: 5, 500: 1, 200: 1, 100: 1, 50: 4, 20: 6, 10: 0}
+# cash_out_amount = 110
+# get_min_nom(banknote_dict, cash_out_amount)
