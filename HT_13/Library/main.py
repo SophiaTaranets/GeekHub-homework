@@ -1,6 +1,7 @@
 from LibraryUser import Student, Admin
 from Category import Category
 from Validation import UserException
+from DB import create_db
 
 
 def enter_menu():
@@ -116,6 +117,5 @@ def main():
         print('Incorrect option!')
 
 
-main()
-
+create_db()
 main()

@@ -55,11 +55,11 @@ def get_min_coins(banknote_dict, amount):
         return print_result
 
 
-# # Test 1: 1170
+# Test 1: 1170
 # banknote_dict = {1000: 5, 500: 1, 200: 4, 100: 0, 50: 1, 20: 1, 10: 5}
 # amount = 1170
 # print(f'1170 -->')
-# get_min_coins(banknote_dict, amount)
+# print(get_min_coins(banknote_dict, amount))
 #
 # print('-' * 15)
 #
