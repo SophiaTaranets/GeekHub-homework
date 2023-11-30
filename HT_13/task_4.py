@@ -2,45 +2,28 @@
 # Тобто це повинен бути клас, який буде поводити себе так,
 # як list (маючи основні методи), але індексація повинна починатись із 1
 
-class MyList:
-    def __init__(self):
-        self._data = []
-
+class MyList(list):
     def __getitem__(self, index):
-        if index < 1 or index > len(self._data):
-            raise IndexError("Index out of range")
-        return self._data[index - 1]
+        if index == 0:
+            raise IndexError('Index start from 1')
 
-    def __setitem__(self, index, value):
-        if index < 1 or index > len(self._data):
-            raise IndexError("Index out of range")
-        self._data[index - 1] = value
-
-    def append(self, value):
-        self._data.append(value)
-
-    def extend(self, values):
-        self._data.extend(values)
-
-    def __len__(self):
-        return len(self._data)
-
-    def __repr__(self):
-        return repr(self._data)
+        adjusted_index = index - 1
+        return super().__getitem__(adjusted_index)
 
 
-my_test_list = MyList()
-my_test_list.append(20)
-my_test_list.append(21)
-print(f'Append: {my_test_list}')
-my_test_list.extend([100, 200])
-print(f'Extended: {my_test_list}')
-print(f'Len: {len(my_test_list)}')
-
+# Test list
+test_list_1 = MyList(['item 1', 'item 2', 'item 3'])
+test_list_2 = MyList(['item 1', 'item 2', 'item 3'])
 try:
-    print(my_test_list[1])
-    print(my_test_list[3])
-    print(my_test_list[0])
-    print('-' * 15)
-except IndexError as e:
-    print(e)
+    print(test_list_1[0])
+except IndexError as error:
+    print(error)
+
+print(f'First element: {test_list_1[1]}')
+test_list_1.append(100)
+test_list_1.extend([200, 300])
+print(f'Append-Extend: {test_list_1}')
+test_list_1.pop()
+print(f'Pop: {test_list_1}')
+print(f'Sum list: {test_list_1 + test_list_2}')
+print(f'Len: {len(test_list_1)}')
