@@ -1,5 +1,7 @@
 from Bank import Bank
+import sys
 
+sys.setrecursionlimit(100000000)
 
 def min_nominal(banknote_dict, total_amount):
     def min_nominal_recursive(amount, memo):
