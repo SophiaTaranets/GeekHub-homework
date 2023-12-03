@@ -29,6 +29,8 @@ class Validation:
         current_datetime = datetime.now()
         if date_obj > current_datetime:
             raise DateException("Date cannot be in the future")
+        if 2008 > date_obj.year:
+            raise DateException("Year should be not earlier than 2008")
         return date_obj
 
     @staticmethod
