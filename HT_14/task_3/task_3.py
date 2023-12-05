@@ -34,6 +34,7 @@ def scraper():
     while True:
         try:
             response = requests.get(current_url)
+            print(f'Scraping page: {str(current_url.split("/")[-2])}')
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             print(f"Error fetching page: {e}")
@@ -74,7 +75,6 @@ def write_to_file():
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for item in content:
-            print(f'Scraping page: {item["page"]}')
             writer.writerow(item)
 
 
