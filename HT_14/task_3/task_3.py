@@ -11,10 +11,6 @@ BASE_URL = 'http://quotes.toscrape.com/'
 FILE_NAME = 'content.csv'
 
 
-def pagination(page_number):
-    return BASE_URL + f'page/{page_number}/'
-
-
 def get_author_information(about_link):
     author_info_url = BASE_URL + about_link
     r = requests.get(author_info_url)
