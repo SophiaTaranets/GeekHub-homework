@@ -8,4 +8,11 @@
 # які робить браузер, коли ви по ній щось робите - наприклад, переходите на наступну сторінку.
 # Підказка 2 - не забувайте використовувати хедери
 
-import requests
+from sears_api import SearsCategoryAPI
+
+if __name__ == '__main__':
+    category_1 = SearsCategoryAPI('1237483576')
+    category_1.write_to_file()
+
+    category_2 = SearsCategoryAPI('1320301405')
+    category_2.write_to_file()
