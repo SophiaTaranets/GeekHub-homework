@@ -4,7 +4,6 @@ import csv
 
 
 class SearsCategoryAPI:
-    SESSION = requests.session()
     BASE_URL = 'https://www.sears.com'
 
     def __init__(self, category_id):
