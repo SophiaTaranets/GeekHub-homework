@@ -18,8 +18,6 @@ import shutil
 import time
 from pathlib import Path
 
-import read_csv
-
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
