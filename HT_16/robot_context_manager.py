@@ -103,7 +103,7 @@ class RobotContextManager:
         return None
 
     def choose_body(self, body_element):
-        body = self._wait(f'#id-body-{body_element}')
+        body = self._wait(f'id-body-{body_element}', selector_type=By.ID)
         body.click()
         return None
 
