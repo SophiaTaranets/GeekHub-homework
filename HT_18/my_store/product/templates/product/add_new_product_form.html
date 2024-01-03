@@ -1,0 +1,14 @@
+{% extends 'ui/base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'product/style.css' %}">
+<div class="container">
+        <h2>Enter IDs of product</h2>
+        <p class="note">Each ID must be entered in a new line</p>
+        <form action="" method="post" novalidate>
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Add IDs">
+        </form>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'product/style.css' %}">
+    <h3>All Products</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Name Brand</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>URL</th>
+        </tr>
+        {% for product in all_products %}
+            <tr>
+                <td><a href="{% url 'product:product_description' pid=product.id %}">{{ product.product_id }}</a></td>
+
+                <td>{{ product.category }}</td>
+                <td>{{ product.brand_name }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td><a href="{{ product.product_url }}" target="_blank">View</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
