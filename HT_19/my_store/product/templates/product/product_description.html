@@ -1,0 +1,27 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'product/style.css' %}">
+    <h3>Product Description</h3>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Name Brand</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>URL</th>
+        </tr>
+        <tr>
+            <td>{{ product.product_id }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.brand_name }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+            <td><a href="{{ product.product_url }}" target="_blank">View</a></td>
+        </tr>
+      </table>
+{% endblock %}
+

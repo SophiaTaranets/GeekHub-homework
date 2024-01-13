@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SearsScraper</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'ui/style.css' %}">
+</head>
+
+<body>
+
+  <nav>
+    <a href="{% url 'product:products_list' %}">All products</a>
+    <a href="{% url 'product:new_product_id' %}">Add new IDs</a>
+    <a href="{% url 'product:view_cart' %}">Shopping cart</a>
+  </nav>
+
+  {% block content %}
+  {% endblock %}
+
+</body>
+</html>
