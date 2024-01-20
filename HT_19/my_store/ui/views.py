@@ -1,1 +1,5 @@
-from django.shortcuts import redirect, reverse
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, 'ui/index.html')

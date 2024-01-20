@@ -32,7 +32,7 @@ class SearsAPI:
 
         file_name = '/api/sal/v3/products/details/'
         full_product_id = 'A' + self.product_id
-        url_category = self.BASE_URL + file_name + full_product_id
+        url_category = self.BASE_URL + file_name + full_product_id.strip()
         response = requests.get(url_category, headers=headers, params=params)
         return response.json()
 
