@@ -1,6 +1,7 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import IDForm
-from .models import ScrapingTask, Product, ShoppingCart, ShoppingCartItem
+from .forms import IDForm, ProductForm
+from .models import ScrapingTask, Product, ShoppingCart, ShoppingCartItem, ProductCategory
 from .scraper.sears_api import SearsAPI
 
 
@@ -9,7 +10,7 @@ def get_new_product_id(request):
         form = IDForm(request.POST)
         if form.is_valid():
             form.save()
-            received_ids = (ScrapingTask.objects.all().last()).ids
+            received_ids = ScrapingTask.objects.last().ids
             new_products_ids = received_ids.split('\n')
             for product_id in new_products_ids:
                 new_product(product_id)
@@ -19,21 +20,29 @@ def get_new_product_id(request):
 
 
 def new_product(id_product):
-    product_information = SearsAPI(id_product) # 108305436
+    product_information = SearsAPI(id_product)
     product_information = product_information.get_product_important_information()
     if product_information:
+        category, created = ProductCategory.objects.get_or_create(name=product_information['category'])
         Product.objects.update_or_create(
             product_id=product_information['product_id'],
             defaults={'name': product_information['name'],
+                      'category': category,
                       'price': product_information['price'],
-                      'category':product_information['category'],
                       'brand_name': product_information['brand_name'],
                       'product_url': product_information['url']})
 
 
-def get_all_products(request):
+def get_all_products(request, category_id=None):
+    categories = ProductCategory.objects.all().distinct()
     all_products = Product.objects.all()
-    return render(request, 'product/products_information.html', context={'all_products': all_products})
+
+    if category_id:
+        category = get_object_or_404(ProductCategory, id=category_id)
+        all_products = all_products.filter(category=category)
+
+    context = {'categories': categories, 'all_products': all_products}
+    return render(request, 'product/products_information.html', context)
 
 
 def product_description(request, pid):
@@ -42,9 +51,8 @@ def product_description(request, pid):
 
 
 def view_cart(request):
-    shopping_cart = ShoppingCart.objects.get()
+    shopping_cart, created = ShoppingCart.objects.get_or_create()
     shopping_cart_items = ShoppingCartItem.objects.filter(shopping_cart=shopping_cart)
-
     return render(request, 'product/shopping_cart.html', context={'cart_items': shopping_cart_items})
 
 
@@ -102,6 +110,34 @@ def delete_product_from_cart(request, product_id):
                   context={'cart_items': ShoppingCartItem.objects.filter(shopping_cart=shopping_cart)})
 
 
+def delete_product(request, product_id):
+    product = Product.objects.get(pk=product_id)
+    if not request.user.is_superuser:
+        messages.error(request, 'You can`t delete products')
+        return redirect('product:products_list')
+    try:
+        product.delete()
+    except Exception:
+        pass
+    return render(request, 'product/product_description.html')
+
+
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if not request.user.is_superuser:
+        messages.error(request, 'You can`t edit products')
+        return redirect('product:products_list')
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product:products_list')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'product/edit_product.html', {'form': form, 'product': product})
+
+
 def clear_shopping_cart(request):
     shopping_cart = ShoppingCart.objects.get()
     shopping_cart_items = ShoppingCartItem.objects.all()
@@ -112,3 +148,10 @@ def clear_shopping_cart(request):
         pass
     return render(request, 'product/shopping_cart.html',
                   context={'cart_items': ShoppingCartItem.objects.filter(shopping_cart=shopping_cart)})
+
+
+def filter_product_by_category(request, category_id):
+    category = get_object_or_404(ProductCategory, id=category_id)
+    filtered_products = Product.objects.filter(category_id=category)
+    return render(request, 'product/filtered_products.html', context={'filtered_products': filtered_products,
+                                                                      'category': category})

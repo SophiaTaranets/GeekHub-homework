@@ -1,0 +1,95 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'product/style.css' %}">
+<style>
+    .button-delete {
+    background-color: #e74c3c;
+    padding: 10px;
+    border:none;
+    border-radius:4px;
+    color:white;
+    }
+
+    .amount {
+    display: flex;
+    margin: 4px;
+    padding: 5px;
+    }
+
+    .amount form {
+    margin-right: 8px;
+}
+
+    .amount form:last-child {
+    margin-right: 0;
+}
+
+    .amount button{
+    padding:4px;
+    border:none;
+    border-radius:4px;
+    background-color: #98FB98;
+}
+</style>
+
+    <h3>Shopping Cart</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+                <th>Amount</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td><a href="{% url 'product:product_description' pid=item.product.id %}">{{ item.product.product_id }}</a></td>
+                    <td>{{ item.product.category }}</td>
+                    <td>{{ item.product.brand_name }}</td>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.product.price }}</td>
+                    <td><a href="{{ item.product.product_url }}" target="_blank">View</a></td>
+                    <td>
+                        <span>{{item.amount}}</span>
+                        <div class="amount">
+                            <form method="post" action="{% url 'product:increase_cart_item' product_id=item.product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="button">+</button>
+                        </form>
+
+                       <form method="post" action="{% url 'product:decrease_cart_item' product_id=item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button">-</button>
+                        </form>
+                        </div>
+
+
+                    </td>
+                    <td>
+                      <form method="post" action="{% url 'product:delete_product_from_cart' product_id=item.product.id %}">
+                          {% csrf_token %}
+                          <button type="submit" class="button-delete" >Delete</button>
+                      </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <form method="post" action="{% url 'product:clear_shopping_cart'%}">
+            {% csrf_token %}
+            <button class="button-delete" type="submit">Delete All Items</button>
+        </form>
+    </div>
+
+{% endblock %}

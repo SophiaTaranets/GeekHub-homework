@@ -1,0 +1,50 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+<style>
+h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    width: 400px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+</style>
+
+<h3>Edit Product - {{ product.name }}</h3>
+<form method="post" action="{% url 'product:edit_product' product_id=product.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+
+{% endblock %}
