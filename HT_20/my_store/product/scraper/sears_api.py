@@ -31,7 +31,7 @@ class SearsAPI:
         }
 
         file_name = '/api/sal/v3/products/details/'
-        full_product_id = 'A' + self.product_id
+        full_product_id = self.product_id
         url_category = self.BASE_URL + file_name + full_product_id.strip()
         response = requests.get(url_category, headers=headers, params=params)
         return response.json()
@@ -44,7 +44,7 @@ class SearsAPI:
                        'category': product_full_info['hierarchies']['specificHierarchy'][1]['name'],
                        'brand_name': product_full_info['brandName'],
                        'name': product_full_info['descriptionName'],
-                       'price': product_full_info['price']['finalPrice'],
+                       'price': product_full_info['salePrice'],
                        'url': self.BASE_URL + product_full_info['seoUrl']}
         except:
             return False
@@ -53,7 +53,7 @@ class SearsAPI:
 
 
 if __name__ == '__main__':
-    # product_item = SearsAPI('058982221')
-    product_item = SearsAPI('109708650')
+    # product_item = SearsAPI('A058982221')
+    product_item = SearsAPI('A109708650')
     # print(product_item.get_product_full_data())
     print(product_item.get_product_important_information())

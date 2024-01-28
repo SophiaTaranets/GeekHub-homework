@@ -71,15 +71,15 @@
                         <button type="submit" class="button">-</button>
                         </form>
                         </div>
-
-
                     </td>
-                    <td>
-                      <form method="post" action="{% url 'product:delete_product_from_cart' product_id=item.product.id %}">
-                          {% csrf_token %}
-                          <button type="submit" class="button-delete" >Delete</button>
-                      </form>
-                    </td>
+
+                   <td>
+                        <form method="post" action="{% url 'product:delete_product_from_cart' item.product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="button-delete">Delete</button>
+                        </form>
+                   </td>
+
                 </tr>
             {% endfor %}
         </tbody>

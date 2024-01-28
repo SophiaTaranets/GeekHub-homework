@@ -41,9 +41,37 @@ button:hover {
 </style>
 
 <h3>Edit Product - {{ product.name }}</h3>
-<form method="post" action="{% url 'product:edit_product' product_id=product.id %}">
+<form method="post" action="{% url 'product:edit_product' product.id %}">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div>
+      <label>Category:</label>
+        <select name="categories">
+          {% for category in categories %}
+            <option><a href="{% url 'product:filter_product_by_category' category_id=category.id %}">{{ product.category.name }}</a></option>
+          {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="{{ form.brand_name.id_for_label }}">Brand Name:</label>
+        <input type="text" name="brand_name" value="{{ product.brand_name }}">
+    </div>
+
+    <div>
+        <label for="{{ form.name.id_for_label }}">Name:</label>
+        <input type="text" name="name" value="{{ product.name }}">
+    </div>
+
+    <div>
+        <label for="{{ form.price.id_for_label }}">Price:</label>
+        <input type="text" name="price" value="{{ product.price }}">
+    </div>
+
+    <div>
+        <label for="{{ form.product_url.id_for_label }}">URL:</label>
+        <input type="text" name="product_url" value="{{ product.product_url }}">
+    </div>
+
     <button type="submit">Save Changes</button>
 </form>
 

@@ -19,7 +19,14 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+ }
+.add{
+    padding: 5px;
+    background-color: #90EE90;
+    border:none;
+    border-radius:4px;
 }
+
 </style>
     <h3>Product Description</h3>
     <table>
@@ -30,8 +37,13 @@
             <th>Title</th>
             <th>Price</th>
             <th>URL</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            {%if user.is_authenticated%}
+                <th>Add</th>
+             {%endif%}
+            {%if user.is_superuser%}
+                <th>Edit</th>
+                <th>Delete</th>
+            {%endif%}
 
         </tr>
         <tr>
@@ -42,21 +54,34 @@
                 <td>{{ product.name }}</td>
                 <td>{{ product.price }}</td>
                 <td><a href="{{ product.product_url }}" target="_blank">View</a></td>
-                <td>
-                     <form method="post" action="{% url 'product:edit_product' product_id=product.id %}">
-                    {% csrf_token %}
-                    <button class="button-edit" type="submit">Edit</button>
-                </form>
-                </td>
-                <td>
-                <form method="post" action="{% url 'product:delete_product' product_id=product.id %}">
-                    {% csrf_token %}
-                    <button class="button-delete" type="submit">Delete</button>
-                </form>
+                {%if user.is_authenticated%}
+                    <td>
+                        <form method="post" action="{% url 'product:add_product_to_cart' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="add">Add</button>
+                        </form>
+                    </td>
+                {%endif%}
+                {%if user.is_superuser%}
+                    <td>
+                         <form method="post" action="{% url 'product:edit_product' product.id %}">
+                            {% csrf_token %}
+                             {%if user.is_superuser%}
+                                <button class="button-edit" type="submit">Edit</button>
+                              {% endif %}
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'product:delete_product' product_id=product.id %}">
+                            {% csrf_token %}
+                                <button class="button-delete" type="submit">Delete</button>
+                        </form>
+                    </td>
+                {% endif %}
             {% else %}
                 <p>Error: Product has been deleted!</p>
             {% endif %}
-            </td>
+
         </tr>
       </table>
 {% endblock %}

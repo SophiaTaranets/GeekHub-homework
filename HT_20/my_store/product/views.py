@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import IDForm, ProductForm
 from .models import ScrapingTask, Product, ShoppingCart, ShoppingCartItem, ProductCategory
 from .scraper.sears_api import SearsAPI
+from .scraper.scraper_subprocess import run_scraper_in_subprocess
 
 
 def get_new_product_id(request):
@@ -31,6 +32,7 @@ def new_product(id_product):
                       'price': product_information['price'],
                       'brand_name': product_information['brand_name'],
                       'product_url': product_information['url']})
+        run_scraper_in_subprocess(id_product)
 
 
 def get_all_products(request, category_id=None):
@@ -105,9 +107,9 @@ def delete_product_from_cart(request, product_id):
 
     except Exception:
         pass
-
-    return render(request, 'product/shopping_cart.html',
-                  context={'cart_items': ShoppingCartItem.objects.filter(shopping_cart=shopping_cart)})
+    return redirect('product:products_list')
+    # return render(request, 'product/products_information.html',
+    #               context={'cart_items': ShoppingCartItem.objects.filter(shopping_cart=shopping_cart)})
 
 
 def delete_product(request, product_id):
@@ -119,23 +121,27 @@ def delete_product(request, product_id):
         product.delete()
     except Exception:
         pass
-    return render(request, 'product/product_description.html')
+    return redirect('product:products_list')
+    # return render(request, 'product/products_information.html')
 
 
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    categories = ProductCategory.objects.all().distinct()
     if not request.user.is_superuser:
-        messages.error(request, 'You can`t edit products')
+        messages.error(request, 'You can\'t edit products')
         return redirect('product:products_list')
+
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         if form.is_valid():
+            print("Form data:", form.cleaned_data)
             form.save()
             return redirect('product:products_list')
     else:
         form = ProductForm(instance=product)
 
-    return render(request, 'product/edit_product.html', {'form': form, 'product': product})
+    return render(request, 'product/edit_product.html', {'form': form, 'product': product,'categories': categories})
 
 
 def clear_shopping_cart(request):
@@ -152,6 +158,8 @@ def clear_shopping_cart(request):
 
 def filter_product_by_category(request, category_id):
     category = get_object_or_404(ProductCategory, id=category_id)
+    categories = ProductCategory.objects.all().distinct()
     filtered_products = Product.objects.filter(category_id=category)
     return render(request, 'product/filtered_products.html', context={'filtered_products': filtered_products,
-                                                                      'category': category})
+                                                                      'category': category,
+                                                                      'categories': categories})
