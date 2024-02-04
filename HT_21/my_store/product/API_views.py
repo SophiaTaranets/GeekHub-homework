@@ -41,13 +41,16 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 class ShoppingCartViewSet(viewsets.ModelViewSet):
     queryset = ShoppingCart.objects.all()
     serializer_class = ShoppingCartSerializer
-
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAdminOrIfAuthentificate,)
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action == "list":
             return ShoppingCartListSerializer
+        elif self.action == "create":
+            return ShoppingCartCreateSerializer
+        elif self.action == "destroy":
+            return ShoppingCartDeleteSerializer
         return ShoppingCartSerializer
 
     def list(self, request, *args, **kwargs):
@@ -55,49 +58,39 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
         serializer = ShoppingCartListSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @staticmethod
-    def post(request):
-        serializer = ShoppingCartCreateSerializer(data=request.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        request.session.modified = True
 
         product_id = serializer.validated_data['product_id']
         shopping_cart = request.session.get('shopping_cart') or {}
+
         if str(product_id) in shopping_cart:
-            return Response({'error': f'Exist'},
+            return Response({'error': f'Product with id {product_id} already exists in the cart'},
                             status=status.HTTP_400_BAD_REQUEST)
+
         shopping_cart[str(product_id)] = 1
         request.session['shopping_cart'] = shopping_cart
-        serializer = ShoppingCartViewSet.list(request)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        request.session.modified = True
 
-    @staticmethod
-    def delete(request):
-        if request.data:
-            serializer = ShoppingCartDeleteSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            product_id = serializer.validated_data['product_id']
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            shopping_cart = request.session.get('shopping_cart') or {}
-            if str(product_id) in shopping_cart:
-                shopping_cart.pop(str(product_id))
-                request.session['cart'] = shopping_cart
-                request.session.modified = True
-            else:
-                return Response({'error': f'No product with{product_id}'},
-                                status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        product_id = serializer.validated_data['product_id']
+        shopping_cart = request.session.get('shopping_cart') or {}
+
+        if str(product_id) in shopping_cart:
+            shopping_cart.pop(str(product_id))
+            request.session['shopping_cart'] = shopping_cart
+            request.session.modified = True
         else:
-            cart = request.session.get('cart') or {}
-            if cart:
-                cart.clear()
-                request.session['cart'] = cart
-                request.session.modified = True
-            else:
-                return Response({'error': 'Cart is empty'},
-                                status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': f'No product with id {product_id} in the cart'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = ShoppingCartViewSet.list(request)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CreateTokenView(ObtainAuthToken):
