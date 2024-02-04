@@ -41,6 +41,7 @@ class ShoppingCartListSerializer(ShoppingCartSerializer):
 
 class ShoppingCartCreateSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
+
     @staticmethod
     def get_product_id(value):
         try:

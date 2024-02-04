@@ -63,7 +63,6 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         product_id = serializer.validated_data['product_id']
-        category = serializer.validated_data['category']
         shopping_cart = request.session.get('shopping_cart') or {}
 
         if str(product_id) in shopping_cart:

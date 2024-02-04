@@ -1,0 +1,37 @@
+{% extends 'ui/base.html' %}
+
+{% block content %}
+   <div class="container">
+     <style>
+      h1{
+      font-family: "Helvetica", sans-serif;
+      }
+      .container{
+        font-family: "Helvetica", sans-serif;
+        font-size: 30px;
+      }
+      .logout{
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      }
+      .logout:hover {
+          background-color: #45a049;
+      }
+      </style>
+
+    {% if user.is_authenticated %}
+     <p>Welcome, {{ user.username }}!</p>
+     <form method="POST" action="{% url 'users:custom_logout' %}">
+       {% csrf_token %}
+       <button class="logout">Log out</button>
+     </form>
+    {% else %}
+        <p>Welcome to the site. Log in to see more</p>
+        <a href="{% url 'users:custom_login' %}">Log in</a>
+    {% endif %}
+   </div>
+{% endblock %}
