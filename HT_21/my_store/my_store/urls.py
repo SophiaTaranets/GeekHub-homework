@@ -18,10 +18,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
+
 
 urlpatterns = [
     path('', include('ui.urls')),
     path('admin/', admin.site.urls),
     path('products/', include('product.urls')),
     path('users/', include('users.urls')),
+    path('api/', include('product.API_urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

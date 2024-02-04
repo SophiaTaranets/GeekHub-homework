@@ -1,6 +1,5 @@
 bs4==0.0.1
 Django==5.0
 django-debug-toolbar==4.2.0
-djangorestframework==3.14.0
 Scrapy==2.11.0
 psycopg==3.1.16

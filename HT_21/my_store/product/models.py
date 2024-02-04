@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -35,3 +36,5 @@ class ShoppingCartItem(models.Model):
 
     def __str__(self):
         return str(f'{self.amount} x {self.product}')
+
+
