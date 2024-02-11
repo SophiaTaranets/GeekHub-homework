@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SearsScraper</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'ui/style.css' %}">
+</head>
+
+<body>
+
+  <nav>
+
+      <a href="{% url 'ui:index' %}">Home</a>
+      <a href="{% url 'product:products_list' %}">All products</a>
+      {%if user.is_superuser%}
+      <a href="{% url 'product:new_product_id' %}">Add new IDs</a>
+      {%endif%}
+      {%if user.is_authenticated%}
+      <a href="{% url 'product:view_cart' %}">Shopping cart</a>
+      {%endif%}
+  </nav>
+
+  {% block content %}
+  {% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="{% static 'cart/script.js'%}"></script>
+<script src="{% static 'product/script.js'%}"></script>
+</body>
+</html>

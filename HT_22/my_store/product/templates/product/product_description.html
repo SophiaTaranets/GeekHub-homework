@@ -20,7 +20,7 @@
     border-radius: 5px;
     cursor: pointer;
  }
-.add{
+..button-add-to-cart{
     padding: 5px;
     background-color: #90EE90;
     border:none;
@@ -58,7 +58,7 @@
                     <td>
                         <form method="post" action="{% url 'product:add_product_to_cart' product.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="add">Add</button>
+                            <button type="submit" class=".button-add-to-cart">Add</button>
                         </form>
                     </td>
                 {%endif%}

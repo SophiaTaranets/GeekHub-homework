@@ -4,7 +4,7 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'product/style.css' %}">
 <style>
-    .button-delete {
+    #button-clear-cart{
     background-color: #e74c3c;
     padding: 10px;
     border:none;
@@ -63,12 +63,12 @@
                         <div class="amount">
                             <form method="post" action="{% url 'product:increase_cart_item' product_id=item.product.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="button">+</button>
+                            <button type="submit" class="button-update-quantity">+</button>
                         </form>
 
-                       <form method="post" action="{% url 'product:decrease_cart_item' product_id=item.product.id %}">
+                       <form method="post">
                         {% csrf_token %}
-                        <button type="submit" class="button">-</button>
+                        <button type="submit" class="button-update-quantity">-</button>
                         </form>
                         </div>
                     </td>
@@ -88,7 +88,7 @@
     <div>
         <form method="post" action="{% url 'product:clear_shopping_cart'%}">
             {% csrf_token %}
-            <button class="button-delete" type="submit">Delete All Items</button>
+            <button id="button-clear-cart" type="submit">Delete All Items</button>
         </form>
     </div>
 
