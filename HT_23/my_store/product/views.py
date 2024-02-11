@@ -3,8 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import IDForm, ProductForm
 from .models import ScrapingTask, Product, ShoppingCart, ShoppingCartItem, ProductCategory
 from .scraper.sears_api import SearsAPI
-from .scraper.scraper_subprocess import run_scraper_in_subprocess
-
+from .task import scrape_and_save_product
 
 def get_new_product_id(request):
     if request.method == "POST":
@@ -14,7 +13,7 @@ def get_new_product_id(request):
             received_ids = ScrapingTask.objects.last().ids
             new_products_ids = received_ids.split('\n')
             for product_id in new_products_ids:
-                new_product(product_id)
+                scrape_and_save_product.delay(product_id)
     else:
         form = IDForm()
     return render(request, 'product/add_new_product_form.html', context={'form': form})
@@ -32,7 +31,6 @@ def new_product(id_product):
                       'price': product_information['price'],
                       'brand_name': product_information['brand_name'],
                       'product_url': product_information['url']})
-        run_scraper_in_subprocess(id_product)
 
 
 def get_all_products(request, category_id=None):
