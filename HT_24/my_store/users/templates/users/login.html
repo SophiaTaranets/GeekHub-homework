@@ -1,0 +1,67 @@
+{% extends 'ui/base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            .container {
+                width: 300px;
+                margin: 50px auto;
+            }
+            form {
+                border: 1px solid #ccc;
+                padding: 20px;
+                border-radius: 5px;
+            }
+            label {
+                display: block;
+                margin-bottom: 8px;
+            }
+            input {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 15px;
+                box-sizing: border-box;
+            }
+            button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            .error-message {
+                color: red;
+                margin-top: 10px;
+            }
+        </style>
+
+
+        <form method="post" action="{% url 'users:custom_login' %}">
+            {% csrf_token %}
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+
+             {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="error-message">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endif  %}
+                {% endfor %}
+            {% endif %}
+            <button type="submit">Login</button>
+        </form>
+    </div>
+{% endblock %}
